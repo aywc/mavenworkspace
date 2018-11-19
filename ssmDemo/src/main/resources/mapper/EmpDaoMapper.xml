@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xbb.ssm.dao.EmpDao">
+    <!--分页查询-->
+    <select id="getPage" resultType="map">
+        select * from (select rownum rn,t.* from (select * from emp
+        <where>
+            <if test="sel!=null and sel!=''">
+                and  ( empno like '%'||#{sel}||'%' or ename like '%'||#{sel}||'%' or job like '%'||#{sel}||'%' or sal like '%'||#{sel}||'%'
+                or comm like '%'||#{sel}||'%' or deptno like '%'||#{sel}||'%')
+            </if>
+        </where>
+        ) t where rownum &lt; #{end} ) a where  a.rn &gt; #{start} order by empno desc
+
+    </select>
+    <!--分页总数量-->
+    <select id="getPageCount" resultType="int">
+        select count(*) from emp
+        <where>
+            <if test="sel!=null and sel!=''">
+                and  ( empno like '%'||#{sel}||'%' or ename like '%'||#{sel}||'%' or job like '%'||#{sel}||'%' or sal like '%'||#{sel}||'%'
+                or comm like '%'||#{sel}||'%' or deptno like '%'||#{sel}||'%') order by empno desc
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <!--<insert id="addEmp">
+      insert into emp (empno,ename,job,sal,comm,hiredate,deptno) values (seq_emp.nextval,#{eName},#{job},#{sal},#{comm},sysdate,#{deptNo})
+    </insert>-->
+    <!--新增返回主键-->
+    <insert id="addEmp">
+      <selectKey keyProperty="empNo" order="BEFORE" resultType="int">
+        select seq_emp.nextval from dual
+      </selectKey>
+        insert into emp (empno,ename,job,sal,comm,hiredate,deptno) values (#{empNo},#{eName},#{job},#{sal},#{comm},sysdate,#{deptNo})
+    </insert>
+    <!--通过ID查询信息-->
+    <select id="getEmpList" resultType="map">
+      select * from emp where empno = #{empNo}
+    </select>
+    <!--修改-->
+    <update id="updateEmp">
+        update emp set ename=#{eName},job=#{job},sal=#{sal},comm=#{comm},deptno=#{deptNo}  where empno = #{empNo}
+    </update>
+    <!--删除-->
+    <delete id="deleteEmp" >
+      delete from emp where empno=#{empNo}
+    </delete>
+    <!--查询所有的单位编号-->
+    <select id="getDeptNoList">
+      select d.deptno from dept d join emp e on e.deptno=d.deptno
+    </select>
+</mapper>
