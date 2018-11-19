@@ -21,6 +21,7 @@ public class LoginController {
 
     @RequestMapping("/login")
     public String login(@RequestParam String username,@RequestParam String password ){
+        System.out.println("111111111");
         System.out.println("1111");
         Subject subject = SecurityUtils.getSubject();
         if(!subject.isAuthenticated()){
