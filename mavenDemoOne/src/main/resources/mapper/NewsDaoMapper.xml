@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace= "com.aaa.mybatis.dao.NewsDoa">
+
+    <!--多对一-->
+    <select id="manyToOne" resultMap="newsAndType">
+      select n.*,t.name from tb_news n,tb_newstype t where n.typeid = t.typeid
+    </select>
+    <!--高级映射 多对一-->
+    <resultMap id="newsAndType" type="news">
+        <!--javaType="int"  实体类中的类型   jdbcType="INTEGER"  数据库中对应的类型  都可以不用写-->
+        <id column="newsid" property="newsId" javaType="int" jdbcType="INTEGER"></id>
+        <result column="title" property="title"></result>
+        <result column="content" property="content"></result>
+        <association property="newsType" javaType="NewsType">
+            <id column="typeid" property="typeId"></id>
+            <result column="name" property="typeName" ></result>
+        </association>
+    </resultMap>
+</mapper>

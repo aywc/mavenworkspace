@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace= "com.aaa.mybatis.dao.EmpDao">
+    <!--查询员工列表-->
+    <select id="getList" parameterType="map" resultType="map">
+      select * from emp
+        <where>
+          <if test="job!=null and job!=''">
+              and job=#{job}
+          </if>
+          <if test="startDate!=null and startDate!=''">
+              and hireDate &gt; to_date(#{startDate},'yyyy-mm-dd')
+          </if>
+          <if test="endDate!=null and endDate!=''">
+                and hireDate &lt; to_date(#{endDate},'yyyy-mm-dd')
+          </if>
+        </where>
+    </select>
+    <!--雇员查询 choose when 方法 如果when 方法都不满足执行otherwise方法 如果满足一个就不会执行下一个when了-->
+    <select id="getListByParam" resultType="map">
+        select * from emp
+        <where>
+            <choose>
+                <when test="empNo!=null and empNo!=0">
+                    and empNo=#{empNo}
+                </when>
+                <when test="job!=null  and job!=''">
+                    and job=#{job}
+                </when>
+                <when test="startDate!=null and startDate!=''">
+                    and hiredate &gt; to_date(#{startDate},'yyyy-mm-dd')
+                </when>
+                <otherwise>
+                    and deptNo=10
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+    <!--员工查询-->
+    <select id="getListByList" resultType="map">
+        select * from emp where empNo in
+        <foreach item="i" open="(" close=")" separator="," collection="list">
+            #{i}
+        </foreach>
+    </select>
+    <!--新增员工信息-->
+    <insert id="" >
+
+    </insert>
+
+    <!--根据id查询员工信息-->
+
+
+    <!--修改员工信息-->
+
+
+    <!--删除员工信息-->
+</mapper>

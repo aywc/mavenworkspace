@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace= "com.aaa.mybatis.dao.DeptDao">
+    <sql id = "sel">
+        select  deptno as deptNo,dname,loc
+    </sql>
+    <!--select 查询标签  ID和接口中的方法名称对象  -->
+    <select id = "getList" resultType = "com.aaa.mybatis.entity.Dept">
+        <include refid="sel"></include> from dept
+    </select>
+    <!--员工添加-->
+    <insert id="add" parameterType="com.aaa.mybatis.entity.Dept">
+       insert into dept values (seq_tabdept_deptno1.nextval,#{dname},#{loc})
+    </insert>
+    <!--根据部门编号查新部门信息-->
+    <select id="getById" resultType="com.aaa.mybatis.entity.Dept">
+        <include refid="sel"></include> from dept where deptno = #{deptNo}
+    </select>
+    <!--更新数据-->
+    <update id="update" parameterType="com.aaa.mybatis.entity.Dept">
+        update dept set dname=#{dname},loc=#{loc} where deptno=#{deptNo}
+    </update>
+    <!--删除 &gt; 大于  &lt; 小于  -->
+    <delete id="delete" >
+        delete from dept where deptno = #{deptNo}
+    </delete>
+    <!--高级映射一对多-->
+    <select id="oneToMany" resultMap="deptAndEmps">
+        select d.dname,d.deptno as dn,d.loc,e.empno,e.ename,e.sal,e.job,e.comm from dept d left join emp e on d.deptno=e.deptno
+    </select>
+    <!--一对多映射配置-->
+    <resultMap id="deptAndEmps" type="dept">
+        <!--javaType="int"  实体类中的类型   jdbcType="INTEGER"  数据库中对应的类型  都可以不用写-->
+        <id column="dn" property="deptNo" javaType="int" jdbcType="INTEGER"></id>
+        <result column="dname" property="dname"></result>
+        <result column="loc" property="loc"></result>
+        <collection property="empList" ofType="emp">
+            <id column="empNo" property="empNo"></id>
+            <result column="sal" property="salary" ></result>
+            <result column="job" property="job"></result>
+            <result column="comm" property="comm"></result>
+            <result column="ename" property="ename"></result>
+        </collection>
+    </resultMap>
+</mapper>
